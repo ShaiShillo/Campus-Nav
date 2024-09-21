@@ -7,30 +7,46 @@
   background-color: #f8f8f8; /* White background */
   /* Other styles... */
 }
+
 #notification-popup {
-    display: none;
-    position: fixed;
-    left: 18% !important;
-    top: 5% !important;
-    transform: translate(-50%, -20%);
-    z-index: 1000;
-    background-color: white;
-    border: 1px solid #ccc;
-    padding: 20px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    text-align: center; /* Aligns text to center */
-    width: 180px; /* Set a fixed width or percentage as per your requirement */
-  }
+  display: none;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  background-color: #f9f9f9; /* Light grey background */
+  border: 1px solid #007bff; /* Blue border */
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  text-align: center; 
+  width: 300px; /* Adjusted width */
+  border-radius: 8px; /* Rounded corners */
+}
 
-  #notification-message {
-    margin-bottom: 20px; /* Gives space between message and button */
-  }
+#notification-message {
+  margin-bottom: 20px; 
+  font-size: 18px; /* Increased font size */
+  color: #333; /* Dark grey text */
+  font-family: 'Arial', sans-serif; /* Different font */
+}
 
-  #close-notification-btn {
-    display: block; /* Block display to fit the full width of its container */
-    margin: 0 auto; /* Auto margins for horizontal centering */
-    padding: 5px 20px; /* Padding inside the button */
-  }
+#close-notification-btn {
+  display: block; 
+  margin: 0 auto; 
+  padding: 10px 15px; /* More padding for the button */
+  background-color: #007bff; /* Blue background */
+  color: white; /* White text */
+  border: none; /* Remove border */
+  border-radius: 5px; /* Rounded button */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s; /* Smooth transition */
+}
+
+#close-notification-btn:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
 
 /* Add a margin between dropdown buttons */
 .ui-buttons-container .dropdown {
