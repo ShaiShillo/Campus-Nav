@@ -23,12 +23,89 @@ function cleanView() {
   if (timeout_id !== null) {
     clearTimeout(timeout_id);
   }
+  app.scene.traverse(function (object) {
+    if (
+      object.isMesh &&
+      object.userData &&
+      object.userData.properties &&
+      object.userData.properties.length > 0
+    ) {
+      if (originalMaterials.has(object)) {
+        object.material = originalMaterials.get(object); // Restore original material
+      }
+    }
+  });
   closeNotification()
 }
+function colorSafeBuildings(numberOfBuildings){
+    for(let i=0;i<numberOfBuildings.length;i++){
+      let building=findObject(numberOfBuildings[i][0],numberOfBuildings[i][1]);
+      building.material.color.set(0xff0000); 
+      
+    }
+  }
 
+let isColor=true;
+var originalMaterials = new Map();// Map to store original materials
+
+function colorRedProtectedSafe() {
+  
+  if(isColor){
+  
+  originalMaterials.clear();
+  // First, set all buildings to grey and save original materials
+  app.scene.traverse(function (object) {
+    if (
+      object.isMesh &&
+      object.userData &&
+      object.userData.properties &&
+      object.userData.properties.length > 0
+    ) {
+      if (!originalMaterials.has(object)) {
+        originalMaterials.set(object, object.material); // Save the original material
+        object.material = object.material.clone(); // Clone the material for this mesh
+      }
+      object.material.color.set(0x808080); // Set color to grey
+    }
+  });
+    //colors the protected buildings in red
+    var numberOfBuildings=[[6,null],[1,null],[5,217]];
+    colorSafeBuildings(numberOfBuildings);
+    isColor=false;
+  }
+ // Now, restore the original materials and colors
+ else{
+  app.scene.traverse(function (object) {
+    if (
+      object.isMesh &&
+      object.userData &&
+      object.userData.properties &&
+      object.userData.properties.length > 0
+    ) {
+      if (originalMaterials.has(object)) {
+        object.material = originalMaterials.get(object); // Restore original material
+      }
+    }
+  });
+  isColor=true;
+}
+  
+  app.renderer.render(app.scene, app.camera);
+}
 
 document.addEventListener('DOMContentLoaded', function () {
   const uiContainer = document.querySelector('.ui-buttons-container');
+  //create a emergency button
+  const colorBuildingsRedBtn = document.createElement('button');
+  colorBuildingsRedBtn.className = 'emergencyButton'; // class name
+  colorBuildingsRedBtn.textContent = 'Emergency';
+
+  // Append the button to the UI container
+  uiContainer.appendChild(colorBuildingsRedBtn);
+
+  colorBuildingsRedBtn.addEventListener('click', function () {
+    colorRedProtectedSafe();
+  });
 
   // Function to create a dropdown
   // Function to create a dropdown
