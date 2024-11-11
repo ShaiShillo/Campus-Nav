@@ -540,3 +540,33 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
+
+
+//Add colors to buildings that currently do not have any color
+document.addEventListener('DOMContentLoaded', function () {
+  // Wait for the Q3D scene to be loaded before proceeding
+  Q3D.application.addEventListener("sceneLoaded", function () {
+    // Define a function to attempt coloring the building until it's successful
+    function attemptToColorBuilding(buildingId) {
+
+      function tryColorBuilding() {
+        let building = findObject(buildingId, null);
+        if (building) {
+          // Generate a random color
+          let randomColor = Math.floor(Math.random() * 16777215);
+          // Building found, change color to the random color
+          building.material.color.setHex(randomColor);
+          building.material.needsUpdate = true;
+          app.renderer.render(app.scene, app.camera);
+        } else {
+          // If building is not found, try again after a short delay
+          setTimeout(tryColorBuilding, 100);
+        }
+      }
+      // Start the first attempt
+      tryColorBuilding();
+    }
+    // Attempt to color buildings with IDs 1, 3, 4, 6, and 7
+    [1, 3, 4, 6, 7].forEach(buildingId => attemptToColorBuilding(buildingId));
+  });
+});
