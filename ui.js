@@ -45,6 +45,58 @@ function colorSafeBuildings(numberOfBuildings){
     }
   }
 
+ 16-add-power-saving-mode
+//Power save action
+let flag2 = 0; //flag used to indicate saved buildings once we launch the app
+let materials = []; //will hold materials of all buildings
+let powerSaveState = false; //state of powersave button
+let powerSaveBtn = document.getElementById("powerSave"); //powersave button
+powerSaveBtn.addEventListener("click",()=>{
+  if(flag2==0){ //will enter only once, to save the materials
+    app.scene.traverse(function (object) {
+      if (object.isMesh && object.userData && object.userData.properties){
+        materials.push({ //adding building data as an object to the array
+          object: object,
+          material: object.material,
+          castShadow: object.castShadow,
+          receiveShadow: object.receiveShadow
+        });
+      }
+      flag2 = 1; //setting flag to 1 to not enter here again (Need to save original building just once)
+    });
+  }
+  if(!powerSaveState){
+    powerSaveBtn.style.backgroundColor = "#04fa56"; //color powerbutton green
+    powerSaveState = true;
+    powerSaveBtn.innerHTML = "Power Save : ON";
+  app.scene.traverse(function (object) { //traversing buildings and changing material and removing shadowing
+    if (object.isMesh && object.userData && object.userData.properties){
+      object.material = new THREE.MeshBasicMaterial({
+        color: object.material.color,
+        flatShading: true,
+      });
+      if (object.castShadow) {
+        object.castShadow = false;
+      }
+      if (object.receiveShadow){ 
+        object.receiveShadow = false;
+      }
+    }
+  });
+  } 
+else{
+  powerSaveState = false;
+  powerSaveBtn.style.backgroundColor = "#dd5236"; //power button styling once clicked OFF
+  powerSaveBtn.innerHTML = "Power Save : OFF";
+  materials.forEach(({ object, material, castShadow, receiveShadow }) => { //Restoring original buildings
+    object.material = material;
+    object.castShadow = castShadow;
+    object.receiveShadow = receiveShadow;
+  });
+}
+  app.render();
+});
+=======
 let isColor=true;
 var originalMaterials = new Map();// Map to store original materials
 
@@ -92,6 +144,7 @@ function colorRedProtectedSafe() {
   
   app.renderer.render(app.scene, app.camera);
 }
+
 
 document.addEventListener('DOMContentLoaded', function () {
   const uiContainer = document.querySelector('.ui-buttons-container');

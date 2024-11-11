@@ -7,6 +7,18 @@
   background-color: #f8f8f8; /* White background */
   /* Other styles... */
 }
+#powerSave {
+  margin-top : 0.2rem;
+  padding: 0.375rem 0.75rem; /* Adjust the padding as needed */
+  font-size: 1rem; /* Set a font size if needed */
+  border-radius: 15px; /* Adjust for rounded corners */
+  border: 2px solid #007bff; /* Blue border */
+  color: blue;
+  background-color: #dd5236;
+}
+#powerSave:hover {
+  cursor: pointer;
+}
 
 #notification-popup {
   display: none;
