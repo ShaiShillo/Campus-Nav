@@ -79,8 +79,45 @@
   /* Other styles... */
 }
 
+/*Quick search*/
+#search-container {
+  position: absolute;
+  top: 10px;
+  left: 70%;
+  z-index: 1000;
+  background-color: transparent;
+  box-sizing: content-box;
+  border-radius: 5px;
+}
 
+#search-input {
+  width: auto; /* Adjust width based on the content */
+  font-size: 16px;
+  text-align: right; 
+  direction: rtl; /*typing right to left*/
+  box-sizing: border-box; /* Ensures padding doesn't expand the element's size */
+  border-radius : 15px; 
+  border: 2px solid #007bff;
+  background-color: #fff;
+  color: #007bff;
+  padding: 0.375rem 0.75rem;
+  transition: all 0.3s;
+}
 
+#building-list {
+  border-radius: 5px;
+  padding: 0;
+  margin: 0;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  max-height: 120px;
+  overflow-y: auto;
+  width: auto; /*match the search input */
+  min-width: 100%; /* Ensure it doesn't shrink smaller than the input */
+  display: none; /* Initially hidden */
+  z-index: 1050;
+  
+}
 
 /* Dropdown Menu Items */
 /* Style for the dropdown item buttons */

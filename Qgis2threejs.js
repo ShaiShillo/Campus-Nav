@@ -1203,7 +1203,6 @@ Q3D.application
   };
 
   app.canvasClicked = function (e) {
-
     // button 2: right click
     if (e.button == 2 && app.measure.isActive) {
       app.measure.removeLastPoint();
@@ -1229,7 +1228,6 @@ Q3D.application
         if (layerId !== undefined) break;
         o = o.parent;
       }
-
       if (layerId === undefined) break;
 
       layer = app.scene.mapLayers[layerId];
@@ -1245,7 +1243,6 @@ Q3D.application
       if (o.userData.isLabel) {
         o = o.userData.objs[o.userData.partIdx];    // label -> object
       }
-
       app.highlightFeature(o);
       app.render();
       gui.showQueryResult(obj.point, layer, o, conf.coord.visible);

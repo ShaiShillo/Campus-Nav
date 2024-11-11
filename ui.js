@@ -145,6 +145,92 @@ function colorRedProtectedSafe() {
   app.renderer.render(app.scene, app.camera);
 }
 
+const searchInput = document.getElementById('search-input'); //search bar
+//adds quicksearch element
+document.addEventListener('DOMContentLoaded',function(){
+  searchInput.addEventListener('keydown',function(event){
+    event.stopPropagation(); //Prevents keybindings (like R=Rotate) from being activated when typing in input characters which are binded to actions 
+  });
+  const searchContainer = document.getElementById('search-container'); //search div container
+  const buildingsList = document.getElementById('building-list'); //list of all buildings from database
+  buildingsList.addEventListener('mouseover',(e)=>{ //mouse-over search result turns it to cyan
+    if(e.target.tagName === 'LI')
+      e.target.style.backgroundColor = '#6bfbe8';
+  });
+  buildingsList.addEventListener('mouseout',(e)=>{ //mouse-out of search result turns it back to white
+    if(e.target.tagName === 'LI')
+    e.target.style.backgroundColor = "#ddd";
+  });
+  //quick search creation
+  function createQuickSearch() {
+    db_data.forEach((building) => { //adding every building in database as a list item
+      let listItem = document.createElement('li'); //each building is a list-item
+      if(building.room_number!='NULL')
+        listItem.textContent = building.room_name +" "+building.room_number+" "+building.building; //text content is name,room number,building number
+      else 
+        listItem.textContent = building.room_name +" "+building.building; //text content is name,building number if there is no room number
+      listItem.style.padding = '5px'; 
+      listItem.style.borderRadius = "10px";
+      listItem.style.textAlign = "right";
+      listItem.style.backgroundColor = "#ddd";
+      listItem.addEventListener('click', () => {
+        selectBuilding(building.room_name,building.building,building.room_number); //name,building num, room number for the zoom in and finding the building
+        searchInput.value = building.room_name +" "+building.room_number+" "+building.building; //after selecting it will be shown in the input box
+      });
+      buildingsList.appendChild(listItem); //adding the building to the list 
+    });
+  }
+
+  // Filter buildings based on input
+  function filterBuildings() {
+    const input = searchInput.value.toLowerCase(); //converting input to lowercase
+    const listItems = buildingsList.querySelectorAll('li'); //returns all <li> under buildingList element
+    let matchCount = 0; //count of search matches
+
+    if(input ===''){ //if there's no input
+      buildingsList.style.display = 'none'; //hide list if it's empty
+      return;
+    }
+
+    listItems.forEach((item) => { //searching for the matching list item to the given input
+      const buildingName = item.textContent.toLowerCase();
+      if (buildingName.includes(input)) {
+        item.style.display = ''; //displaying the item
+        matchCount++;
+      }
+         else { //if no part of the list item matches the input
+        item.style.display = 'none'; //not displaying the item
+      }
+    });
+
+    // Show or hide the dropdown based on matches
+    if (matchCount > 0) {
+      buildingsList.style.display = 'block';
+    } 
+    else {
+      buildingsList.style.display = 'none';
+    }
+  }
+
+  // Handle selecting a building
+  function selectBuilding(buildingName,buildingNum,roomNum) {
+    searchInput.value = buildingName; // Set input value to selected building
+    buildingsList.style.display = 'none'; // Hide the dropdown
+    let selectedBuilding = findObject(buildingNum,roomNum); //finding the building with given parameters
+    highlightsFeature(buildingNum,roomNum); //highlights building
+  }
+
+  searchInput.addEventListener('keyup', filterBuildings); // filters after every letter addition
+  createQuickSearch(); // Initialize the search functionality
+});
+
+//Ensures so that when a user clicks on something that is not the input box, he will be out of the input box
+document.addEventListener('click',function(event){
+  if(event.target !== searchInput){
+    searchInput.blur(); //input isn't active if user clicked out of it
+  }
+});
+
 
 document.addEventListener('DOMContentLoaded', function () {
   const uiContainer = document.querySelector('.ui-buttons-container');
@@ -261,12 +347,6 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
-
-
-
-
-
-
 //-------------------------------- HIGHLIGHTS  FEATURE --------------------------------
 
 let timeout_id = null; // global for last timeout id to be cleared
@@ -316,7 +396,6 @@ function findObject(buildingNumber, roomNumber) {
       }
     }
   });
-
   return objectToHighlight;
 }
 
