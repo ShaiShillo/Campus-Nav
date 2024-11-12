@@ -45,7 +45,6 @@ function colorSafeBuildings(numberOfBuildings){
     }
   }
 
- 16-add-power-saving-mode
 //Power save action
 let flag2 = 0; //flag used to indicate saved buildings once we launch the app
 let materials = []; //will hold materials of all buildings
@@ -96,7 +95,6 @@ else{
 }
   app.render();
 });
-=======
 let isColor=true;
 var originalMaterials = new Map();// Map to store original materials
 
