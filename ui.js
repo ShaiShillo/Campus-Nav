@@ -143,7 +143,22 @@ function colorRedProtectedSafe() {
   app.renderer.render(app.scene, app.camera);
 }
 
+//Search input element
 const searchInput = document.getElementById('search-input'); //search bar
+const searchIcon = document.getElementById('search-icon');
+//Toggles the search input to show/hide when clicking on the search icon
+document.addEventListener('DOMContentLoaded', function () {
+  searchIcon.addEventListener('click', function () {
+    if(searchInput.style.display=='none'){ //if it's hidden
+      searchInput.style.display='inline-block';
+    }
+    else{ //if it's showing
+      searchInput.style.display='none';
+    }
+    console.log("Clicked");
+  });
+});
+
 //adds quicksearch element
 document.addEventListener('DOMContentLoaded',function(){
   searchInput.addEventListener('keydown',function(event){
@@ -177,7 +192,9 @@ document.addEventListener('DOMContentLoaded',function(){
       });
       buildingsList.appendChild(listItem); //adding the building to the list 
     });
-  }
+ }
+
+ 
 
   // Filter buildings based on input
   function filterBuildings() {
@@ -221,6 +238,8 @@ document.addEventListener('DOMContentLoaded',function(){
   searchInput.addEventListener('keyup', filterBuildings); // filters after every letter addition
   createQuickSearch(); // Initialize the search functionality
 });
+
+ 
 
 //Ensures so that when a user clicks on something that is not the input box, he will be out of the input box
 document.addEventListener('click',function(event){
