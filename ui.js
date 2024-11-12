@@ -155,7 +155,6 @@ document.addEventListener('DOMContentLoaded', function () {
     else{ //if it's showing
       searchInput.style.display='none';
     }
-    console.log("Clicked");
   });
 });
 
