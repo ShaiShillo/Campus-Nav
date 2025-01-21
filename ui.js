@@ -9,6 +9,187 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
+////////////////////// ***GATES***///////////////////////////
+const gatesData = [
+  {
+    id: 7,
+    description: "שער מעונות",
+    position: { x: 3871047.00, y: 3765125.00, z: 0 }, 
+    rotation: Math.PI / 5 // סיבוב בזווית 90 מעלות
+  },
+  {
+    id: 8,
+    description: "שער 8",
+    position: { x: 3870922.00, y: 3765124.00, z: 0 },  
+    rotation: Math.PI / 1.06 // סיבוב בזווית 180 מעלות
+  },
+  {
+    id: 5,
+    description: "שער 5",
+    position: { x: 3871027.00, y: 3765252.00, z: 0 }, 
+    rotation: Math.PI / 1.2 // סיבוב בזווית 45 מעלות
+  },
+  {
+    id: 1,
+    description: "שער 1",
+    position: { x: 3870958.00, y: 3765418.00, z: 0 }, 
+    rotation: -Math.PI / 2 // סיבוב בזווית -90 מעלות
+  }
+];
+
+function createGate(buildingNumber, description, position, rotation = 0) {
+  const gateGroup = new THREE.Group();
+
+  // הגדרות גודל השער
+  const postWidth = 1;
+  const postHeight = 8;
+  const postDepth = 0.5;
+  const beamHeight = 1;
+  const gateWidth = 8;
+
+  const postGeometry = new THREE.BoxGeometry(postWidth, postHeight, postDepth);
+  const postMaterial = new THREE.MeshPhongMaterial({ color: 0x654321 });
+
+  const leftPost = new THREE.Mesh(postGeometry, postMaterial);
+  const rightPost = new THREE.Mesh(postGeometry, postMaterial);
+
+  leftPost.position.set(-gateWidth / 2, postHeight / 2, 0);
+  rightPost.position.set(gateWidth / 2, postHeight / 2, 0);
+
+  gateGroup.add(leftPost);
+  gateGroup.add(rightPost);
+
+  const beamGeometry = new THREE.BoxGeometry(gateWidth, beamHeight, postDepth);
+  const beam = new THREE.Mesh(beamGeometry, postMaterial);
+  beam.position.set(0, postHeight + beamHeight / 2, 0);
+  gateGroup.add(beam);
+
+  gateGroup.userData = {
+    id: buildingNumber,
+    name: description,
+    type: 'gate'
+  };
+
+  gateGroup.position.set(position.x, position.y, position.z);
+
+ // סיבוב השער בהתאם 
+  gateGroup.rotation.y = rotation; 
+  gateGroup.rotation.x = Math.PI/2 ;
+
+  if (app && app.scene) {
+    app.scene.add(gateGroup);
+    console.log(`Gate ${buildingNumber} added at position`, position, "with rotation", rotation);
+  } else {
+    console.error("App or scene is not defined");
+  }
+
+  app.renderer.render(app.scene, app.camera);
+  return gateGroup;
+}
+
+
+document.addEventListener('DOMContentLoaded', function () {
+  Q3D.application.addEventListener("sceneLoaded", function () {
+    console.log("Scene loaded, adding gates...");
+
+    gatesData.forEach(gate => {
+      createGate(
+        gate.id,
+        gate.description,
+        gate.position,
+        gate.rotation
+      );
+    });
+
+    app.renderer.render(app.scene, app.camera); // רענון הסצנה לאחר הוספת השערים
+  });
+});
+/*//////////////////////nigth mood////////////////////////////////*/
+document.addEventListener('DOMContentLoaded', () => {
+  Q3D.application.addEventListener('sceneLoaded', () => {
+    const nightModeButton = document.getElementById('NightModeBtn'); // שימוש ב-ID החדש
+    const body = document.body;
+
+    // בדיקה אם מצב לילה כבר שמור ב-localStorage
+    if (localStorage.getItem('nightMode') === 'true') {
+      body.classList.add('night-mode');
+      setNightMode(true);
+      nightModeButton.textContent = 'Day Mode';
+    }
+
+    // אירוע לחיצה על הכפתור
+    nightModeButton.addEventListener('click', () => {
+      const isEnabled = body.classList.toggle('night-mode');
+      localStorage.setItem('nightMode', isEnabled);
+      setNightMode(isEnabled);
+      nightModeButton.textContent = isEnabled ? 'Day Mode' : 'Night Mode';
+    });
+  });
+});
+
+
+function setNightMode(enabled) {
+  var canvas = document.createElement("canvas");
+  canvas.width = app.renderer.domElement.width;
+  canvas.height = app.renderer.domElement.height;
+
+  var ctx = canvas.getContext("2d");
+
+  if (enabled) {
+    // מצב לילה: שחור כהה למעלה, אפור כהה למטה
+    var grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    grad.addColorStop(0, "#000000"); // שחור למעלה
+    grad.addColorStop(0.5, "#1a1a1a"); // אפור כהה באמצע
+    grad.addColorStop(1, "#d3d3d3"); // אפור כהה בתחתית
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // הגדרת הטקסטורה כקנבס
+    const texture = new THREE.CanvasTexture(canvas);
+    app.scene.background = texture;
+
+    // תאורה למצב לילה
+    app.scene.children.forEach(child => {
+      if (child.isLight) {
+        child.intensity = 0.3;
+      }
+    });
+    
+  } else {
+    // מצב יום: כחול בהיר למעלה, לבן למטה
+    var grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    grad.addColorStop(0, "#add8e6"); // כחול בהיר
+    grad.addColorStop(0.5, "#ffffff"); // לבן באמצע
+    grad.addColorStop(1, "#f0f9ff"); // לבן-כחול בתחתית
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // הגדרת הטקסטורה כקנבס
+    const texture = new THREE.CanvasTexture(canvas);
+    app.scene.background = texture;
+
+    // תאורה למצב יום
+    app.scene.children.forEach(child => {
+      if (child.isLight) {
+        child.intensity = 1.0;
+      }
+    });
+  }
+
+  // רענון הסצנה
+  app.renderer.render(app.scene, app.camera);
+}
+function addNightLights() {
+  const pointLight = new THREE.PointLight(0xffa500, 0.5, 50); // תאורה חמה
+  pointLight.position.set(0, 10, 10);
+  app.scene.add(pointLight);
+}
+
+
+
+
+////////////////////////////////////////////////////////////////
+
 function cleanView() {
   console.log('Clean View button clicked');
   app.cleanView()

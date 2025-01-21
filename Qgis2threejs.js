@@ -1331,8 +1331,14 @@ Q3D.application
 
     // restore clear color
     var bgcolor = conf.bgColor;
-    app.renderer.setClearColor(bgcolor || 0, (bgcolor === null) ? 0 : 1);
+    //app.renderer.setClearColor(bgcolor || 0, (bgcolor === null) ? 0 : 1);
 
+    if (body.classList.contains('night-mode')) {
+      app.renderer.setClearColor(new THREE.Color(0x000000)); // רקע שחור בלילה
+    } else {
+      app.renderer.setClearColor(bgcolor || 0, (bgcolor === null) ? 0 : 1);
+    }
+    
     if (fill_background && bgcolor === null) {
       var canvas = document.createElement("canvas");
       canvas.width = width;

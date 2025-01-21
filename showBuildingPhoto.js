@@ -1,11 +1,11 @@
-// Function to display the building photo
-function displayBuildingPhoto(buildingId) {
+  // Function to display the building photo
+  function displayBuildingPhoto(buildingId) {
     let photoUrl;
     if (buildingId >= 60 && buildingId < 65) {
         photoUrl = 'hit_photos/img60.jpg'; // Use img60 for buildings with ID between 60 and 64
     } else {
-        photoUrl = `hit_photos/img${buildingId}.jpg`; // Regular case, assuming image files are named img1.jpg, img2.jpg, etc.
-    }// Assuming the image files are named img1.jpg, img2.jpg, etc.
+        photoUrl = `hit_photos/img${buildingId}.jpg`; //image files are named img1.jpg, img2.jpg, etc.
+    }
     
     // Create or get the existing photo container
     let photoContainer = document.getElementById('buildingPhotoContainer');
