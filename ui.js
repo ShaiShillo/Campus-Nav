@@ -10,126 +10,11 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 ////////////////////// **Trails**/////////////////////////// 
-//const trails  
-const trailsData = [  
-{
-id: 10, 
-description: "dormsToEntranceTrail", 
-x1: 3871044.48,
-y1: 3765127.84,
-x2: 3870932.69,
-y2: 3765134.02
-},
-{
-id: 11, 
-description: "mainEntranceTrail",
-x1: 3870934.28,
-y1: 3765134.02,
-x2: 3870919.31,
-y2: 3765126.29
-},
-{
-id: 12, 
-description: "dormToBuilding6", 
-x1: 3871044.48,
-y1: 3765127.84,
-x2: 3870994.86,
-y2: 3765211.47
-},
-{
-  id: 13,
-  description: "building8trail",
-  x1: 3870937.94,
-  y1: 3765135.85,
-  x2: 3870944.69,
-  y2: 3765183.33
-},
-{
-  id: 14,
-  description: "building8trailLeftTurn",
-  x1: 3870944.69,
-  y1: 3765183.33,
-  x2: 3870913.45,
-  y2: 3765188.49
-},
-{
-  id: 14,
-  description: "building8ToBuilding5",
-  x1: 3870913.45,
-  y1: 3765188.49,
-  x2: 3870919.50,
-  y2: 3765219.34
-},
-{
-  id: 14,
-  description: "building5Left",
-  x1: 3870919.50,
-  y1: 3765219.34,
-  x2: 3870904.32,
-  y2: 3765238.76
-},
-{
-  id: 14,
-  description: "sculpturesTrail",
-  x1: 3870919.50,
-  y1: 3765219.34,
-  x2: 3870923.36,
-  y2: 3765352.78
-},
-{
-  id: 14,
-  description: "building3ToBuilding5",
-  x1: 3870921.15,
-  y1: 3765288.61,
-  x2: 3870973.68,
-  y2: 3765261.22
-},
-{
-  id: 14,
-  description: "building5ToBuilding6Meeting",
-  x1: 3870972.77,
-  y1: 3765262.28,
-  x2: 3871010.83,
-  y2: 3765232.48
-},
-{
-  id: 14,
-  description: "building6ToExit",
-  x1: 3870995.81,
-  y1: 3765210.87,
-  x2: 3871025.19,
-  y2: 3765251.84
-},
-{
-  id: 14,
-  description: "building8ToBuilding6",
-  x1: 3870944.15,
-  y1: 3765183.35,
-  x2: 3870996.31,
-  y2: 3765212.35
-},
-{
-  id: 14,
-  description: "rightTurnBuilding1",
-  x1: 3870923.17,
-  y1: 3765352.43,
-  x2: 3870945.13,
-  y2: 3765352.32
-},
-{
-  id: 14,
-  description: "leftTurnBuilding1",
-  x1: 3870923.17,
-  y1: 3765352.43,
-  x2: 3870881.63,
-  y2: 3765360.46
-},
-
-];
-//CREATE TRAILS
-for(let i=0;i<trailsData.length;i++){
-let start = new THREE.Vector3(trailsData[i].x1,trailsData[i].y1,0.3);
-let end = new THREE.Vector3(trailsData[i].x2,trailsData[i].y2,0.3);
+import trailsData from './trailsData.js';
+//Coordinates of every trail
+trailsData.forEach(trail => {
+let start = new THREE.Vector3(trail.x1,trail.y1,0.3);
+let end = new THREE.Vector3(trail.x2,trail.y2,0.3);
 // Calculate the road's length and direction
 const direction = new THREE.Vector3().subVectors(end, start); // Vector from start to end
 const roadLength = direction.length(); // Length of the road
@@ -140,7 +25,7 @@ const roadGeometry = new THREE.PlaneGeometry(roadLength, roadWidth);
 
 // Create a material for the road
 const roadMaterial = new THREE.MeshBasicMaterial({
-  color: 0xb1b1b1, // Dark gray (road-like)
+  color: 0x808080, // Dark gray (road-like)
   side: THREE.DoubleSide,
 });
 
@@ -148,7 +33,7 @@ const roadMaterial = new THREE.MeshBasicMaterial({
 const road = new THREE.Mesh(roadGeometry, roadMaterial);
 // Align the road with the direction
 // Rotate the road to align with the direction in 3D
-const axis = new THREE.Vector3(1, 0, 0); // Default direction for the plane (aligned with Z-axis)
+const axis = new THREE.Vector3(1, 0, 0); // Default direction for the plane (aligned with X-axis)
 const quaternion = new THREE.Quaternion(); // Create a quaternion
 quaternion.setFromUnitVectors(axis, direction.clone().normalize()); // Align the Z-axis with the direction
 road.applyQuaternion(quaternion);
@@ -165,7 +50,7 @@ app.scene.add(road);
 app.renderer.render(app.scene, app.camera); // רענון הסצנה לאחר הוספת השערים 
 });
 });
-}
+});
 
 ////////////////////// ***GATES***///////////////////////////
 const gatesData = [
