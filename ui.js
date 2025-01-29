@@ -140,9 +140,8 @@ const roadGeometry = new THREE.PlaneGeometry(roadLength, roadWidth);
 
 // Create a material for the road
 const roadMaterial = new THREE.MeshBasicMaterial({
-  color: 0x333333, // Dark gray (road-like)
+  color: 0xb1b1b1, // Dark gray (road-like)
   side: THREE.DoubleSide,
-  map: roadTexture
 });
 
 // Create the road mesh
