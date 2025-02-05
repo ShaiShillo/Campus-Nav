@@ -44,13 +44,6 @@ const trailsData = [
       y2: 3765219.34
     },
     {
-      description: "building5Left",
-      x1: 3870919.50,
-      y1: 3765219.34,
-      x2: 3870904.32,
-      y2: 3765238.76
-    },
-    {
       description: "sculpturesTrail",
       x1: 3870919.50,
       y1: 3765219.34,
