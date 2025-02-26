@@ -9,6 +9,230 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
+////////////////////// **Trails**/////////////////////////// 
+import trailsData from './trailsData.js';
+//Coordinates of every trail
+trailsData.forEach(trail => {
+let start = new THREE.Vector3(trail.x1,trail.y1,0.3);
+let end = new THREE.Vector3(trail.x2,trail.y2,0.3);
+// Calculate the road's length and direction
+const direction = new THREE.Vector3().subVectors(end, start); // Vector from start to end
+const roadLength = direction.length(); // Length of the road
+
+// Create a plane for the road
+const roadWidth = 3; // Width of the road
+const roadGeometry = new THREE.PlaneGeometry(roadLength, roadWidth);
+
+// Create a material for the road
+const roadMaterial = new THREE.MeshBasicMaterial({
+  color: 0x808080, // Dark gray (road-like)
+  side: THREE.DoubleSide,
+});
+
+// Create the road mesh
+const road = new THREE.Mesh(roadGeometry, roadMaterial);
+// Align the road with the direction
+// Rotate the road to align with the direction in 3D
+const axis = new THREE.Vector3(1, 0, 0); // Default direction for the plane (aligned with X-axis)
+const quaternion = new THREE.Quaternion(); // Create a quaternion
+quaternion.setFromUnitVectors(axis, direction.clone().normalize()); // Align the Z-axis with the direction
+road.applyQuaternion(quaternion);
+
+// Position the road between the two points
+const midpoint = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5); // Midpoint of the two points
+road.position.copy(midpoint);
+
+// Add the line to the Three.js scene
+document.addEventListener('DOMContentLoaded', function () {
+Q3D.application.addEventListener("sceneLoaded", function () {
+console.log("Scene loaded, adding trails...");
+app.scene.add(road);
+app.renderer.render(app.scene, app.camera); // רענון הסצנה לאחר הוספת השערים 
+});
+});
+});
+
+////////////////////// ***GATES***///////////////////////////
+const gatesData = [
+  {
+    id: 7,
+    description: "שער מעונות",
+    position: { x: 3871047.00, y: 3765125.00, z: 0 }, 
+    rotation: Math.PI / 5 // סיבוב בזווית 90 מעלות
+  },
+  {
+    id: 8,
+    description: "שער 8",
+    position: { x: 3870922.00, y: 3765124.00, z: 0 },  
+    rotation: Math.PI / 1.06 // סיבוב בזווית 180 מעלות
+  },
+  {
+    id: 5,
+    description: "שער 5",
+    position: { x: 3871027.00, y: 3765252.00, z: 0 }, 
+    rotation: Math.PI / 1.2 // סיבוב בזווית 45 מעלות
+  },
+  {
+    id: 1,
+    description: "שער 1",
+    position: { x: 3870958.00, y: 3765418.00, z: 0 }, 
+    rotation: -Math.PI / 2 // סיבוב בזווית -90 מעלות
+  }
+];
+
+function createGate(buildingNumber, description, position, rotation = 0) {
+  const gateGroup = new THREE.Group();
+
+  // הגדרות גודל השער
+  const postWidth = 1;
+  const postHeight = 8;
+  const postDepth = 0.5;
+  const beamHeight = 1;
+  const gateWidth = 8;
+
+  const postGeometry = new THREE.BoxGeometry(postWidth, postHeight, postDepth);
+  const postMaterial = new THREE.MeshPhongMaterial({ color: 0x654321 });
+
+  const leftPost = new THREE.Mesh(postGeometry, postMaterial);
+  const rightPost = new THREE.Mesh(postGeometry, postMaterial);
+
+  leftPost.position.set(-gateWidth / 2, postHeight / 2, 0);
+  rightPost.position.set(gateWidth / 2, postHeight / 2, 0);
+
+  gateGroup.add(leftPost);
+  gateGroup.add(rightPost);
+
+  const beamGeometry = new THREE.BoxGeometry(gateWidth, beamHeight, postDepth);
+  const beam = new THREE.Mesh(beamGeometry, postMaterial);
+  beam.position.set(0, postHeight + beamHeight / 2, 0);
+  gateGroup.add(beam);
+
+  gateGroup.userData = {
+    id: buildingNumber,
+    name: description,
+    type: 'gate'
+  };
+
+  gateGroup.position.set(position.x, position.y, position.z);
+
+ // סיבוב השער בהתאם 
+  gateGroup.rotation.y = rotation; 
+  gateGroup.rotation.x = Math.PI/2 ;
+
+  if (app && app.scene) {
+    app.scene.add(gateGroup);
+    console.log(`Gate ${buildingNumber} added at position`, position, "with rotation", rotation);
+  } else {
+    console.error("App or scene is not defined");
+  }
+
+  app.renderer.render(app.scene, app.camera);
+  return gateGroup;
+}
+
+
+document.addEventListener('DOMContentLoaded', function () {
+  Q3D.application.addEventListener("sceneLoaded", function () {
+    console.log("Scene loaded, adding gates...");
+
+    gatesData.forEach(gate => {
+      createGate(
+        gate.id,
+        gate.description,
+        gate.position,
+        gate.rotation
+      );
+    });
+
+    app.renderer.render(app.scene, app.camera); // רענון הסצנה לאחר הוספת השערים
+  });
+});
+/*//////////////////////nigth mood////////////////////////////////*/
+document.addEventListener('DOMContentLoaded', () => {
+  Q3D.application.addEventListener('sceneLoaded', () => {
+    const nightModeButton = document.getElementById('NightModeBtn'); // שימוש ב-ID החדש
+    const body = document.body;
+
+    // בדיקה אם מצב לילה כבר שמור ב-localStorage
+    if (localStorage.getItem('nightMode') === 'true') {
+      body.classList.add('night-mode');
+      setNightMode(true);
+      nightModeButton.textContent = 'Day Mode';
+    }
+
+    // אירוע לחיצה על הכפתור
+    nightModeButton.addEventListener('click', () => {
+      const isEnabled = body.classList.toggle('night-mode');
+      localStorage.setItem('nightMode', isEnabled);
+      setNightMode(isEnabled);
+      nightModeButton.textContent = isEnabled ? 'Day Mode' : 'Night Mode';
+    });
+  });
+});
+
+
+function setNightMode(enabled) {
+  var canvas = document.createElement("canvas");
+  canvas.width = app.renderer.domElement.width;
+  canvas.height = app.renderer.domElement.height;
+
+  var ctx = canvas.getContext("2d");
+
+  if (enabled) {
+    // מצב לילה: שחור כהה למעלה, אפור כהה למטה
+    var grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    grad.addColorStop(0, "#000000"); // שחור למעלה
+    grad.addColorStop(0.5, "#1a1a1a"); // אפור כהה באמצע
+    grad.addColorStop(1, "#d3d3d3"); // אפור כהה בתחתית
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // הגדרת הטקסטורה כקנבס
+    const texture = new THREE.CanvasTexture(canvas);
+    app.scene.background = texture;
+
+    // תאורה למצב לילה
+    app.scene.children.forEach(child => {
+      if (child.isLight) {
+        child.intensity = 0.3;
+      }
+    });
+    
+  } else {
+    // מצב יום: כחול בהיר למעלה, לבן למטה
+    var grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    grad.addColorStop(0, "#add8e6"); // כחול בהיר
+    grad.addColorStop(0.5, "#ffffff"); // לבן באמצע
+    grad.addColorStop(1, "#f0f9ff"); // לבן-כחול בתחתית
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // הגדרת הטקסטורה כקנבס
+    const texture = new THREE.CanvasTexture(canvas);
+    app.scene.background = texture;
+
+    // תאורה למצב יום
+    app.scene.children.forEach(child => {
+      if (child.isLight) {
+        child.intensity = 1.0;
+      }
+    });
+  }
+
+  // רענון הסצנה
+  app.renderer.render(app.scene, app.camera);
+}
+function addNightLights() {
+  const pointLight = new THREE.PointLight(0xffa500, 0.5, 50); // תאורה חמה
+  pointLight.position.set(0, 10, 10);
+  app.scene.add(pointLight);
+}
+
+
+
+
+////////////////////////////////////////////////////////////////
+
 function cleanView() {
   console.log('Clean View button clicked');
   app.cleanView()
@@ -23,12 +247,244 @@ function cleanView() {
   if (timeout_id !== null) {
     clearTimeout(timeout_id);
   }
+  app.scene.traverse(function (object) {
+    if (
+      object.isMesh &&
+      object.userData &&
+      object.userData.properties &&
+      object.userData.properties.length > 0
+    ) {
+      if (originalMaterials.has(object)) {
+        object.material = originalMaterials.get(object); // Restore original material
+      }
+    }
+  });
   closeNotification()
 }
+function colorSafeBuildings(numberOfBuildings){
+    for(let i=0;i<numberOfBuildings.length;i++){
+      let building=findObject(numberOfBuildings[i][0],numberOfBuildings[i][1]);
+      building.material.color.set(0xff0000); 
+      
+    }
+  }
+
+//Power save action
+let flag2 = 0; //flag used to indicate saved buildings once we launch the app
+let materials = []; //will hold materials of all buildings
+let powerSaveState = false; //state of powersave button
+let powerSaveBtn = document.getElementById("powerSave"); //powersave button
+powerSaveBtn.addEventListener("click",()=>{
+  if(flag2==0){ //will enter only once, to save the materials
+    app.scene.traverse(function (object) {
+      if (object.isMesh && object.userData && object.userData.properties){
+        materials.push({ //adding building data as an object to the array
+          object: object,
+          material: object.material,
+          castShadow: object.castShadow,
+          receiveShadow: object.receiveShadow
+        });
+      }
+      flag2 = 1; //setting flag to 1 to not enter here again (Need to save original building just once)
+    });
+  }
+  if(!powerSaveState){
+    powerSaveBtn.style.backgroundColor = "#04fa56"; //color powerbutton green
+    powerSaveState = true;
+    powerSaveBtn.innerHTML = "Power Save : ON";
+  app.scene.traverse(function (object) { //traversing buildings and changing material and removing shadowing
+    if (object.isMesh && object.userData && object.userData.properties){
+      object.material = new THREE.MeshBasicMaterial({
+        color: object.material.color,
+        flatShading: true,
+      });
+      if (object.castShadow) {
+        object.castShadow = false;
+      }
+      if (object.receiveShadow){ 
+        object.receiveShadow = false;
+      }
+    }
+  });
+  } 
+else{
+  powerSaveState = false;
+  powerSaveBtn.style.backgroundColor = "#dd5236"; //power button styling once clicked OFF
+  powerSaveBtn.innerHTML = "Power Save : OFF";
+  materials.forEach(({ object, material, castShadow, receiveShadow }) => { //Restoring original buildings
+    object.material = material;
+    object.castShadow = castShadow;
+    object.receiveShadow = receiveShadow;
+  });
+}
+  app.render();
+});
+let isColor=true;
+var originalMaterials = new Map();// Map to store original materials
+
+function colorRedProtectedSafe() {
+  
+  if(isColor){
+  
+  originalMaterials.clear();
+  // First, set all buildings to grey and save original materials
+  app.scene.traverse(function (object) {
+    if (
+      object.isMesh &&
+      object.userData &&
+      object.userData.properties &&
+      object.userData.properties.length > 0
+    ) {
+      if (!originalMaterials.has(object)) {
+        originalMaterials.set(object, object.material); // Save the original material
+        object.material = object.material.clone(); // Clone the material for this mesh
+      }
+      object.material.color.set(0x808080); // Set color to grey
+    }
+  });
+    //colors the protected buildings in red
+    var numberOfBuildings=[[6,null],[1,null],[5,217]];
+    colorSafeBuildings(numberOfBuildings);
+    isColor=false;
+  }
+ // Now, restore the original materials and colors
+ else{
+  app.scene.traverse(function (object) {
+    if (
+      object.isMesh &&
+      object.userData &&
+      object.userData.properties &&
+      object.userData.properties.length > 0
+    ) {
+      if (originalMaterials.has(object)) {
+        object.material = originalMaterials.get(object); // Restore original material
+      }
+    }
+  });
+  isColor=true;
+}
+  
+  app.renderer.render(app.scene, app.camera);
+}
+
+//Search input element
+const searchInput = document.getElementById('search-input'); //search bar
+const searchIcon = document.getElementById('search-icon');
+//Toggles the search input to show/hide when clicking on the search icon
+document.addEventListener('DOMContentLoaded', function () {
+  searchIcon.addEventListener('click', function () {
+    if(searchInput.style.display=='none'){ //if it's hidden
+      searchInput.style.display='inline-block';
+    }
+    else{ //if it's showing
+      searchInput.style.display='none';
+    }
+  });
+});
+
+//adds quicksearch element
+document.addEventListener('DOMContentLoaded',function(){
+  searchInput.addEventListener('keydown',function(event){
+    event.stopPropagation(); //Prevents keybindings (like R=Rotate) from being activated when typing in input characters which are binded to actions 
+  });
+  const searchContainer = document.getElementById('search-container'); //search div container
+  const buildingsList = document.getElementById('building-list'); //list of all buildings from database
+  buildingsList.addEventListener('mouseover',(e)=>{ //mouse-over search result turns it to cyan
+    if(e.target.tagName === 'LI')
+      e.target.style.backgroundColor = '#6bfbe8';
+  });
+  buildingsList.addEventListener('mouseout',(e)=>{ //mouse-out of search result turns it back to white
+    if(e.target.tagName === 'LI')
+    e.target.style.backgroundColor = "#ddd";
+  });
+  //quick search creation
+  function createQuickSearch() {
+    db_data.forEach((building) => { //adding every building in database as a list item
+      let listItem = document.createElement('li'); //each building is a list-item
+      if(building.room_number!='NULL')
+        listItem.textContent = building.room_name +" "+building.room_number+" "+building.building; //text content is name,room number,building number
+      else 
+        listItem.textContent = building.room_name +" "+building.building; //text content is name,building number if there is no room number
+      listItem.style.padding = '5px'; 
+      listItem.style.borderRadius = "10px";
+      listItem.style.textAlign = "right";
+      listItem.style.backgroundColor = "#ddd";
+      listItem.addEventListener('click', () => {
+        selectBuilding(building.room_name,building.building,building.room_number); //name,building num, room number for the zoom in and finding the building
+        searchInput.value = building.room_name +" "+building.room_number+" "+building.building; //after selecting it will be shown in the input box
+      });
+      buildingsList.appendChild(listItem); //adding the building to the list 
+    });
+ }
+
+ 
+
+  // Filter buildings based on input
+  function filterBuildings() {
+    const input = searchInput.value.toLowerCase(); //converting input to lowercase
+    const listItems = buildingsList.querySelectorAll('li'); //returns all <li> under buildingList element
+    let matchCount = 0; //count of search matches
+
+    if(input ===''){ //if there's no input
+      buildingsList.style.display = 'none'; //hide list if it's empty
+      return;
+    }
+
+    listItems.forEach((item) => { //searching for the matching list item to the given input
+      const buildingName = item.textContent.toLowerCase();
+      if (buildingName.includes(input)) {
+        item.style.display = ''; //displaying the item
+        matchCount++;
+      }
+         else { //if no part of the list item matches the input
+        item.style.display = 'none'; //not displaying the item
+      }
+    });
+
+    // Show or hide the dropdown based on matches
+    if (matchCount > 0) {
+      buildingsList.style.display = 'block';
+    } 
+    else {
+      buildingsList.style.display = 'none';
+    }
+  }
+
+  // Handle selecting a building
+  function selectBuilding(buildingName,buildingNum,roomNum) {
+    searchInput.value = buildingName; // Set input value to selected building
+    buildingsList.style.display = 'none'; // Hide the dropdown
+    let selectedBuilding = findObject(buildingNum,roomNum); //finding the building with given parameters
+    highlightsFeature(buildingNum,roomNum); //highlights building
+  }
+
+  searchInput.addEventListener('keyup', filterBuildings); // filters after every letter addition
+  createQuickSearch(); // Initialize the search functionality
+});
+
+ 
+
+//Ensures so that when a user clicks on something that is not the input box, he will be out of the input box
+document.addEventListener('click',function(event){
+  if(event.target !== searchInput){
+    searchInput.blur(); //input isn't active if user clicked out of it
+  }
+});
 
 
 document.addEventListener('DOMContentLoaded', function () {
   const uiContainer = document.querySelector('.ui-buttons-container');
+  //create a emergency button
+  const colorBuildingsRedBtn = document.createElement('button');
+  colorBuildingsRedBtn.className = 'emergencyButton'; // class name
+  colorBuildingsRedBtn.textContent = 'Emergency';
+
+  // Append the button to the UI container
+  uiContainer.appendChild(colorBuildingsRedBtn);
+
+  colorBuildingsRedBtn.addEventListener('click', function () {
+    colorRedProtectedSafe();
+  });
 
   // Function to create a dropdown
   // Function to create a dropdown
@@ -131,12 +587,6 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
-
-
-
-
-
-
 //-------------------------------- HIGHLIGHTS  FEATURE --------------------------------
 
 let timeout_id = null; // global for last timeout id to be cleared
@@ -186,7 +636,6 @@ function findObject(buildingNumber, roomNumber) {
       }
     }
   });
-
   return objectToHighlight;
 }
 
@@ -463,3 +912,33 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
+
+
+//Add colors to buildings that currently do not have any color
+document.addEventListener('DOMContentLoaded', function () {
+  // Wait for the Q3D scene to be loaded before proceeding
+  Q3D.application.addEventListener("sceneLoaded", function () {
+    // Define a function to attempt coloring the building until it's successful
+    function attemptToColorBuilding(buildingId) {
+
+      function tryColorBuilding() {
+        let building = findObject(buildingId, null);
+        if (building) {
+          // Generate a random color
+          let randomColor = Math.floor(Math.random() * 16777215);
+          // Building found, change color to the random color
+          building.material.color.setHex(randomColor);
+          building.material.needsUpdate = true;
+          app.renderer.render(app.scene, app.camera);
+        } else {
+          // If building is not found, try again after a short delay
+          setTimeout(tryColorBuilding, 100);
+        }
+      }
+      // Start the first attempt
+      tryColorBuilding();
+    }
+    // Attempt to color buildings with IDs 1, 3, 4, 6, and 7
+    [1, 3, 4, 6, 7].forEach(buildingId => attemptToColorBuilding(buildingId));
+  });
+});

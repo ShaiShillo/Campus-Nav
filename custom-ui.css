@@ -7,6 +7,18 @@
   background-color: #f8f8f8; /* White background */
   /* Other styles... */
 }
+#powerSave {
+  margin-top : 0.2rem;
+  padding: 0.375rem 0.75rem; /* Adjust the padding as needed */
+  font-size: 1rem; /* Set a font size if needed */
+  border-radius: 15px; /* Adjust for rounded corners */
+  border: 2px solid #007bff; /* Blue border */
+  color: blue;
+  background-color: #dd5236;
+}
+#powerSave:hover {
+  cursor: pointer;
+}
 
 #notification-popup {
   display: none;
@@ -67,8 +79,49 @@
   /* Other styles... */
 }
 
-
-
+/*Quick search*/
+#search-icon {
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  font-size: 16px;
+  cursor: pointer;
+  display: inline-block;
+  transition: all 0.3s;
+}
+#search-input {
+  width: auto; /* Initially take the full available width */
+  max-width: 300px; /* Set a maximum width to avoid being too large */
+  min-width: 100px; /* Set a minimum width to avoid shrinking too much */
+  font-size: 16px;
+  text-align: right;
+  direction: rtl;
+  box-sizing: border-box;
+  border-radius: 15px;
+  border: 2px solid #007bff;
+  background-color: #fff;
+  color: #007bff;
+  padding: 0.375rem 0.75rem;
+  transition: all 0.3s;
+  display: inline-block; /* Allows the input to shrink with the window size */
+  margin-top: 1rem;
+}
+#building-list {
+  border-radius: 5px;
+  padding: 0;
+  margin: 0;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  max-height: 120px;
+  overflow-y: auto;
+  width: auto; /*match the search input */
+  min-width: 100%; /* Ensure it doesn't shrink smaller than the input */
+  display: none; /* Initially hidden */
+  z-index: 1050;
+  
+}
 
 /* Dropdown Menu Items */
 /* Style for the dropdown item buttons */
@@ -144,10 +197,13 @@
 }
 
 #toolbar {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 1050; /* Ensure it's above the map */
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1050;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* Aligns everything to the right */
 }
 /* Reset some basic elements */
 body, h1, h2, h3, h4, h5, h6, p, ul {
@@ -229,6 +285,42 @@ body {
   background-color: #007bff;
   color: #fff;
 }
+.emergencyButton {
+  padding: 5px;
+  margin: 10px;
+  background-color: red;
+  color: black; 
+  border-radius: 50px; 
+  border: none; 
+  font-size: 16px; 
+  cursor: pointer;
+}
 
+.emergencyButton:hover {
+  background-color:rgb(0, 98, 255);
+  color: white;
+}
 /* Additional custom styles can go below */
 /* ... (any other custom styles you have) ... */
+
+/*/////////////// night mood /////////////////////*/
+
+#NightModeBtn {
+  border: 2px solid #007bff;
+  background-color: #fff;
+  color: #007bff;
+  padding: 0.375rem 0.75rem;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+#NightModeBtn:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+
+body.night-mode {
+  background-color: #000; /* רקע שחור */
+  color: #ccc; 
+}

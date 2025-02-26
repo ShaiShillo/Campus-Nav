@@ -12,7 +12,6 @@ function ViewHelper(editorCamera, container) {
 	var scope = this;
 
 	panel.dom.addEventListener('mouseup', function (event) {
-
 		event.stopPropagation();
 
 		scope.handleClick(event);
